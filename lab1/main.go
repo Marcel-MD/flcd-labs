@@ -16,16 +16,11 @@ type Pair struct {
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
-	fmt.Println("Enter nonterminal symbols separated by spaces: ")
+	fmt.Println("Enter productions of rules separated by spaces (S-aS S-bS ...): ")
+	// S-aS S-bS S-cD D-dD D-bF D-a F-bS F-a
 	scanner.Scan()
-	vn := strings.Split(scanner.Text(), " ")
 
-	// fmt.Println("Enter terminal symbols separated by spaces: ")
-	// scanner.Scan()
-	// vt := strings.Split(scanner.Text(), " ")
-
-	fmt.Println("Enter derivatives separated by spaces (S-aS S-bS): ")
-	scanner.Scan()
+	// productions of rules
 	p := strings.Split(scanner.Text(), " ")
 
 	graph := make(map[string][]Pair)
@@ -44,6 +39,10 @@ func main() {
 		}
 	}
 
+	// non-terminal symbols
+	vn := make([]string, 0)
+	dfs(&graph, &vn, "S")
+
 	fmt.Println()
 	printGraph(&graph, &vn)
 
@@ -60,6 +59,7 @@ func main() {
 	}
 }
 
+// Check if string is accepted by FA
 func checkString(str *[]string, graph *map[string][]Pair) bool {
 	pos := "S"
 
@@ -88,17 +88,35 @@ func checkString(str *[]string, graph *map[string][]Pair) bool {
 	return false
 }
 
+// Prints the graph
 func printGraph(graph *map[string][]Pair, vn *[]string) {
 	for s, arr := range *graph {
-		fmt.Print(convert(s, vn), ": [")
+		fmt.Print(convertSymbol(s, vn), ": [")
 		for _, p := range arr {
-			fmt.Printf("[%s: %s]", p.t, convert(p.n, vn))
+			fmt.Printf("[%s: %s]", p.t, convertSymbol(p.n, vn))
 		}
 		fmt.Print("]\n")
 	}
 }
 
-func convert(s string, vn *[]string) string {
+// Depth First Search
+func dfs(graph *map[string][]Pair, vn *[]string, start string) {
+	if start == "" {
+		return
+	}
+
+	*vn = append(*vn, start)
+
+	for _, p := range (*graph)[start] {
+		if indexOf(p.n, vn) != -1 {
+			continue
+		}
+		dfs(graph, vn, p.n)
+	}
+}
+
+// Converts nonterminal symbols to q0, q1...
+func convertSymbol(s string, vn *[]string) string {
 	index := indexOf(s, vn)
 
 	if index == -1 {
@@ -108,6 +126,7 @@ func convert(s string, vn *[]string) string {
 	return "q" + strconv.Itoa(index)
 }
 
+// Because there is no indexOf in Go
 func indexOf(element string, data *[]string) int {
 	for i, v := range *data {
 		if element == v {
