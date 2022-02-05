@@ -41,16 +41,17 @@ func main() {
 
 	// non-terminal symbols
 	vn := make([]string, 0)
-	dfs(&graph, &vn, "S")
+	dfs(graph, vn, "S")
 
 	fmt.Println()
-	printGraph(&graph, &vn)
+	printGraph(graph, vn)
 
 	fmt.Println("\nGive me a string to check if it's accepted by FA: ")
+	// acdbbca
 	scanner.Scan()
 	str := strings.Split(scanner.Text(), "")
 
-	rsp := checkString(&str, &graph)
+	rsp := checkString(str, graph)
 
 	if rsp {
 		fmt.Println("Your string was accepted!")
@@ -60,12 +61,12 @@ func main() {
 }
 
 // Check if string is accepted by FA
-func checkString(str *[]string, graph *map[string][]Pair) bool {
+func checkString(str []string, graph map[string][]Pair) bool {
 	pos := "S"
 
-	for _, c := range *str {
+	for _, c := range str {
 
-		arr := (*graph)[pos]
+		arr := graph[pos]
 		check := false
 
 		for _, p := range arr {
@@ -89,8 +90,8 @@ func checkString(str *[]string, graph *map[string][]Pair) bool {
 }
 
 // Prints the graph
-func printGraph(graph *map[string][]Pair, vn *[]string) {
-	for s, arr := range *graph {
+func printGraph(graph map[string][]Pair, vn []string) {
+	for s, arr := range graph {
 		fmt.Print(convertSymbol(s, vn), ": [")
 		for _, p := range arr {
 			fmt.Printf("[%s: %s]", p.t, convertSymbol(p.n, vn))
@@ -100,14 +101,14 @@ func printGraph(graph *map[string][]Pair, vn *[]string) {
 }
 
 // Depth First Search
-func dfs(graph *map[string][]Pair, vn *[]string, start string) {
+func dfs(graph map[string][]Pair, vn []string, start string) {
 	if start == "" {
 		return
 	}
 
-	*vn = append(*vn, start)
+	vn = append(vn, start)
 
-	for _, p := range (*graph)[start] {
+	for _, p := range (graph)[start] {
 		if indexOf(p.n, vn) != -1 {
 			continue
 		}
@@ -116,19 +117,19 @@ func dfs(graph *map[string][]Pair, vn *[]string, start string) {
 }
 
 // Converts nonterminal symbols to q0, q1...
-func convertSymbol(s string, vn *[]string) string {
+func convertSymbol(s string, vn []string) string {
 	index := indexOf(s, vn)
 
 	if index == -1 {
-		return "q" + strconv.Itoa(len(*vn))
+		return "q" + strconv.Itoa(len(vn))
 	}
 
 	return "q" + strconv.Itoa(index)
 }
 
 // Because there is no indexOf in Go
-func indexOf(element string, data *[]string) int {
-	for i, v := range *data {
+func indexOf(element string, data []string) int {
+	for i, v := range data {
 		if element == v {
 			return i
 		}
