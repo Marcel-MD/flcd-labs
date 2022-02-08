@@ -66,6 +66,15 @@ func main() {
 		dfa[s] = buildStateRow(nfa, s)
 	}
 
+	// build other rows if needed
+	for _, v := range dfa {
+		for _, vv := range v {
+			if dfa[vv] == nil {
+				dfa[vv] = buildStateRow(nfa, vv)
+			}
+		}
+	}
+
 	fmt.Print("\n")
 	printFa(dfa)
 
