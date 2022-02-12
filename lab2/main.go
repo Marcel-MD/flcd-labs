@@ -21,61 +21,10 @@ func main() {
 	scanner.Scan()
 	transitions := strings.Split(scanner.Text(), " ")
 
-	// building nondeterministinc finite automata matrix graph
-	nfa := make(map[string]map[string]string)
-	for _, t := range transitions {
-		arr := strings.Split(t, "-")
-
-		if nfa[arr[0]] == nil {
-			nfa[arr[0]] = map[string]string{arr[1]: arr[2]}
-		} else {
-			nfa[arr[0]][arr[1]] = sortString(nfa[arr[0]][arr[1]] + arr[2])
-		}
-	}
-
+	nfa := buildNfa(transitions)
 	printFa(nfa)
 
-	newStates := make([]string, 0)
-	stateRows := make([]string, 0)
-	// getting new states and the rows where they appeared
-	newStates, stateRows = getNewStates(nfa, newStates, stateRows)
-
-	// building deterministinc finite automata matrix graph
-	dfa := make(map[string]map[string]string)
-
-	// add q0 row as first row
-	dfa["0"] = make(map[string]string)
-	for k, v := range nfa["0"] {
-		dfa["0"][k] = v
-	}
-
-	// add rows where new states appeared
-	for _, row := range stateRows {
-		if row != "0" {
-			for k, v := range nfa[row] {
-				if dfa[row] == nil {
-					dfa[row] = make(map[string]string)
-				}
-				dfa[row][k] = v
-			}
-		}
-	}
-
-	// build new states rows
-	for _, s := range newStates {
-		dfa[s] = buildStateRow(nfa, s)
-	}
-
-	// build other rows if needed
-	for _, v := range dfa {
-		for _, vv := range v {
-			if dfa[vv] == nil {
-				dfa[vv] = buildStateRow(nfa, vv)
-			}
-		}
-	}
-
-	fmt.Print("\n")
+	dfa := convertNfaToDfa(nfa)
 	printFa(dfa)
 
 	fmt.Println("\nGive me a string to check if it's accepted by DFA: ")
@@ -89,6 +38,98 @@ func main() {
 	} else {
 		fmt.Println("Your string was rejected!")
 	}
+}
+
+func convertNfaToDfa(nfa map[string]map[string]string) map[string]map[string]string {
+	dfa := make(map[string]map[string]string)
+
+	// 1. Copy q0 row as first row
+	dfa["0"] = make(map[string]string)
+	for k, v := range nfa["0"] {
+		dfa["0"][k] = v
+	}
+
+	// 2. Finding new states and the rows where they appeared
+	newStates, stateRows := getNewStates(nfa)
+
+	// 3. Copy rows where new states appeared
+	for _, row := range stateRows {
+		if row != "0" {
+			for k, v := range nfa[row] {
+				if dfa[row] == nil {
+					dfa[row] = make(map[string]string)
+				}
+				dfa[row][k] = v
+			}
+		}
+	}
+
+	// 4. Build rows for new states
+	for _, s := range newStates {
+		dfa[s] = buildStateRow(nfa, s)
+	}
+
+	// 5. Build rows for states that have no rows
+	for _, v := range dfa {
+		for _, vv := range v {
+			if dfa[vv] == nil {
+				dfa[vv] = buildStateRow(nfa, vv)
+			}
+		}
+	}
+
+	return dfa
+}
+
+func buildNfa(transitions []string) map[string]map[string]string {
+	nfa := make(map[string]map[string]string)
+	for _, t := range transitions {
+		arr := strings.Split(t, "-")
+
+		if nfa[arr[0]] == nil {
+			nfa[arr[0]] = map[string]string{arr[1]: arr[2]}
+		} else {
+			nfa[arr[0]][arr[1]] = prepareStateString(nfa[arr[0]][arr[1]] + arr[2])
+		}
+	}
+	return nfa
+}
+
+func buildStateRow(nfa map[string]map[string]string, state string) map[string]string {
+	row := make(map[string]string)
+	states := strings.Split(state, "")
+
+	for _, s := range states {
+		for k, v := range nfa[s] {
+
+			if row[k] == "" {
+				row[k] = v
+			} else if !strings.Contains(row[k], v) {
+				v = v + row[k]
+				row[k] = prepareStateString(v)
+			}
+		}
+	}
+
+	return row
+}
+
+func getNewStates(fa map[string]map[string]string) ([]string, []string) {
+	newStates := make([]string, 0)
+	stateRows := make([]string, 0)
+
+	for k, v := range fa {
+		for _, vv := range v {
+			if len(vv) > 1 {
+				if indexOf(vv, newStates) == -1 {
+					newStates = append(newStates, vv)
+					stateRows = append(stateRows, k)
+				}
+			}
+		}
+	}
+
+	return newStates, stateRows
 }
 
 func checkString(dfa map[string]map[string]string, str []string, end string) bool {
@@ -117,42 +158,8 @@ func checkString(dfa map[string]map[string]string, str []string, end string) boo
 	return false
 }
 
-func buildStateRow(nfa map[string]map[string]string, state string) map[string]string {
-	row := make(map[string]string)
-	states := strings.Split(state, "")
-
-	for _, s := range states {
-		for k, v := range nfa[s] {
-
-			if row[k] == "" {
-				row[k] = v
-			} else if !strings.Contains(row[k], v) {
-				v = v + row[k]
-				row[k] = sortString(v)
-			}
-		}
-	}
-
-	return row
-}
-
-func getNewStates(fa map[string]map[string]string, newStates []string, stateRows []string) ([]string, []string) {
-	for k, v := range fa {
-		for _, vv := range v {
-			if len(vv) > 1 {
-				if indexOf(vv, newStates) == -1 {
-					newStates = append(newStates, vv)
-					stateRows = append(stateRows, k)
-				}
-			}
-		}
-	}
-
-	return newStates, stateRows
-}
-
 func printFa(fa map[string]map[string]string) {
-	fmt.Print("\n")
+	fmt.Print("\n\n")
 
 	for k, v := range fa {
 		for _, c := range k {
@@ -172,7 +179,7 @@ func printFa(fa map[string]map[string]string) {
 	}
 }
 
-func sortString(str string) string {
+func prepareStateString(str string) string {
 	s := strings.Split(str, "")
 	s = removeDuplicateStr(s)
 	sort.Strings(s)
@@ -191,7 +198,6 @@ func removeDuplicateStr(strSlice []string) []string {
 	return list
 }
 
-// Because there is no indexOf in Go
 func indexOf(element string, data []string) int {
 	for i, v := range data {
 		if element == v {
