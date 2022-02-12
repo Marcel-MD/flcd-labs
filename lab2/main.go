@@ -26,9 +26,24 @@ func main() {
 	printFa(dfa)
 }
 
+func buildNfa(transitions []string) FiniteAutomata {
+	nfa := make(FiniteAutomata)
+	for _, t := range transitions {
+		arr := strings.Split(t, "-")
+
+		if nfa[arr[0]] == nil {
+			nfa[arr[0]] = FiniteAutomataRow{arr[1]: arr[2]}
+		} else {
+			nfa[arr[0]][arr[1]] = prepareStateStr(nfa[arr[0]][arr[1]] + arr[2])
+		}
+	}
+	return nfa
+}
+
 func convertNfaToDfa(nfa FiniteAutomata) FiniteAutomata {
 	dfa := make(FiniteAutomata)
 
+	// copy first row from nfa
 	dfa["0"] = make(FiniteAutomataRow)
 	for k, v := range nfa["0"] {
 		dfa["0"][k] = v
@@ -52,20 +67,6 @@ func recursiveBuildDfa(dfa *FiniteAutomata, nfa FiniteAutomata) {
 	}
 }
 
-func buildNfa(transitions []string) FiniteAutomata {
-	nfa := make(FiniteAutomata)
-	for _, t := range transitions {
-		arr := strings.Split(t, "-")
-
-		if nfa[arr[0]] == nil {
-			nfa[arr[0]] = FiniteAutomataRow{arr[1]: arr[2]}
-		} else {
-			nfa[arr[0]][arr[1]] = prepareStateStr(nfa[arr[0]][arr[1]] + arr[2])
-		}
-	}
-	return nfa
-}
-
 func buildStateRow(nfa FiniteAutomata, state string) FiniteAutomataRow {
 	row := make(FiniteAutomataRow)
 	states := strings.Split(state, "")
@@ -83,6 +84,25 @@ func buildStateRow(nfa FiniteAutomata, state string) FiniteAutomataRow {
 	}
 
 	return row
+}
+
+func prepareStateStr(str string) string {
+	s := strings.Split(str, "")
+	s = removeDuplicateStr(s)
+	sort.Strings(s)
+	return strings.Join(s, "")
+}
+
+func removeDuplicateStr(strSlice []string) []string {
+	allKeys := make(map[string]bool)
+	list := []string{}
+	for _, item := range strSlice {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }
 
 func printFa(fa FiniteAutomata) {
@@ -123,32 +143,4 @@ func printFaRow(fa FiniteAutomata, row string) {
 	}
 
 	fmt.Print("\n")
-}
-
-func prepareStateStr(str string) string {
-	s := strings.Split(str, "")
-	s = removeDuplicateStr(s)
-	sort.Strings(s)
-	return strings.Join(s, "")
-}
-
-func removeDuplicateStr(strSlice []string) []string {
-	allKeys := make(map[string]bool)
-	list := []string{}
-	for _, item := range strSlice {
-		if _, value := allKeys[item]; !value {
-			allKeys[item] = true
-			list = append(list, item)
-		}
-	}
-	return list
-}
-
-func indexOf(element string, data []string) int {
-	for i, v := range data {
-		if element == v {
-			return i
-		}
-	}
-	return -1
 }
