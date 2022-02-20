@@ -1,0 +1,24 @@
+float pow(float a, int n) {
+
+    float p = a;
+
+    for(int i = 0; i < n; i++) {
+        p = p * a;
+    }
+
+    return p;
+}
+
+int main() {
+
+    p = pow(2.13, 10);
+    str s = "";
+
+    if(p >= 805 && true != false) {
+        s = "success";
+    } else {
+        s = "loss";
+    }
+    
+    return 0;
+}
