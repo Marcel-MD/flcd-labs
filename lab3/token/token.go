@@ -1,7 +1,5 @@
 package token
 
-type TokenType string
-
 type Token struct {
 	Type  TokenType
 	Value string
@@ -10,6 +8,8 @@ type Token struct {
 func New(tokenType TokenType, value string) Token {
 	return Token{Type: tokenType, Value: value}
 }
+
+type TokenType string
 
 const (
 	ILLEGAL = "ILLEGAL"

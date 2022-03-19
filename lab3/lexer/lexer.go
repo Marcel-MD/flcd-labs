@@ -16,7 +16,18 @@ func New(input string) *Lexer {
 	return l
 }
 
+func (l *Lexer) movePosition() {
+	l.currentPosition = l.peekPosition
+	if l.peekPosition >= len(l.input) {
+		return
+	}
+	l.peekPosition++
+}
+
 func (l *Lexer) GetTokens() []token.Token {
+	l.peekPosition = 0
+	l.movePosition()
+
 	tokens := make([]token.Token, 0)
 	currentToken := l.NextToken()
 	tokens = append(tokens, currentToken)
@@ -124,14 +135,6 @@ func (l *Lexer) NextToken() token.Token {
 
 	l.movePosition()
 	return t
-}
-
-func (l *Lexer) movePosition() {
-	l.currentPosition = l.peekPosition
-	if l.peekPosition >= len(l.input) {
-		return
-	}
-	l.peekPosition++
 }
 
 func (l *Lexer) backPosition() {

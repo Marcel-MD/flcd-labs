@@ -20,7 +20,9 @@ func main() {
 		tokens = scanFile("test.txt")
 	}
 
-	fmt.Println(tokens)
+	for _, t := range tokens {
+		fmt.Println(t)
+	}
 }
 
 func scanFile(path string) []token.Token {
