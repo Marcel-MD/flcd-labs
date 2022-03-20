@@ -14,6 +14,33 @@ public class Grammar
     public bool IsNonTerminal(string symbol) => N.Contains(symbol);
     public bool IsNonTerminal(char symbol) => N.Contains(symbol.ToString());
 
+    public void RemoveEverythingContaining(HashSet<string> symbolSet)
+    {
+        foreach (var symbol in symbolSet)
+        {
+            P.Remove(symbol);
+        }
+        
+        foreach (var (k, v) in P)
+        {
+            var length = v.Count;
+            for (var i = 0; i < length; i++)
+            {
+                var containsSymbol = v[i].Any(symbol => symbolSet.Contains(symbol.ToString()));
+
+                if (containsSymbol)
+                {
+                    v.RemoveAt(i);
+                    length--;
+                    i--;
+                }
+            }
+        }
+        
+        N.ExceptWith(symbolSet);
+        T.ExceptWith(symbolSet);
+    }
+
     public override string ToString()
     {
         var sb = new StringBuilder();

@@ -39,27 +39,8 @@ public static class Step3
 
         var unproductive = grammar.N.Except(productive).ToHashSet();
 
-        // Remove unproductive
-        foreach (var symbol in unproductive)
-        {
-            grammar.P.Remove(symbol);
-        }
-        
-        foreach (var (k, v) in grammar.P)
-        {
-            var length = v.Count;
-            for (var i = 0; i < length; i++)
-            {
-                bool containsUnproductive = v[i].Any(symbol => unproductive.Contains(symbol.ToString()));
-
-                if (containsUnproductive)
-                {
-                    v.RemoveAt(i);
-                    length--;
-                    i--;
-                }
-            }
-        }
+        // Remove unproductive symbols
+        grammar.RemoveEverythingContaining(unproductive);
 
         return grammar;
     }

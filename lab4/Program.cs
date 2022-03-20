@@ -33,3 +33,6 @@ Console.WriteLine(Step2.RemoveRename(grammar));
 
 Console.WriteLine("//== Step 3 ==//");
 Console.WriteLine(Step3.RemoveUnproductive(grammar));
+
+Console.WriteLine("//== Step 4 ==//");
+Console.WriteLine(Step4.RemoveInaccessible(grammar));
