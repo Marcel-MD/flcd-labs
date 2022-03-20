@@ -31,3 +31,5 @@ Console.WriteLine(Step1.RemoveEmpty(grammar));
 Console.WriteLine("//== Step 2 ==//");
 Console.WriteLine(Step2.RemoveRename(grammar));
 
+Console.WriteLine("//== Step 3 ==//");
+Console.WriteLine(Step3.RemoveUnproductive(grammar));
