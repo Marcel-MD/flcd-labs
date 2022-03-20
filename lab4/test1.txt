@@ -1,0 +1,3 @@
+﻿S A B C E
+a b
+S-aB S-AC A-a A-ACSC A-BC B-b B-aA C-ε C-BA E-bB
