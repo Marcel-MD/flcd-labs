@@ -36,3 +36,6 @@ Console.WriteLine(Step3.RemoveUnproductive(grammar));
 
 Console.WriteLine("//== Step 4 ==//");
 Console.WriteLine(Step4.RemoveInaccessible(grammar));
+
+Console.WriteLine("//== Step 5 ==//");
+Console.WriteLine(Step5.Chomsky(grammar));
