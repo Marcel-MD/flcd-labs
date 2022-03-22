@@ -11,7 +11,9 @@ public static class Step3
         {
             foreach (var transition in v)
             {
-                if (grammar.IsTerminal(transition))
+                var count = transition.TakeWhile(c => grammar.IsTerminal(c.ToString())).Count();
+
+                if (transition.Length == count)
                 {
                     productive.Add(k);
                 }
@@ -19,22 +21,33 @@ public static class Step3
         }
         
         // B -> b, where b in Vt or in productive
-        foreach (var (k, v) in grammar.P)
+        while (true)
         {
-            if (!productive.Contains(k))
+            var toAdd = new HashSet<string>();
+            
+            foreach (var (k, v) in grammar.P)
             {
-                foreach (var transition in v)
+                if (!productive.Contains(k) && !toAdd.Contains(k))
                 {
-                    var count = transition.TakeWhile(symbol =>
-                        grammar.IsTerminal(symbol) || productive.Contains(symbol.ToString())).Count();
-
-                    if (transition.Length == count)
+                    foreach (var transition in v)
                     {
-                        productive.Add(k);
-                        break;
+                        var count = transition.TakeWhile(symbol =>
+                            grammar.IsTerminal(symbol) ||
+                            productive.Contains(symbol.ToString()) ||
+                            toAdd.Contains(symbol.ToString())).Count();
+
+                        if (transition.Length == count)
+                        {
+                            toAdd.Add(k);
+                            break;
+                        }
                     }
                 }
             }
+            
+            if (toAdd.Count == 0) break;
+            
+            productive.UnionWith(toAdd);
         }
 
         var unproductive = grammar.N.Except(productive).ToHashSet();

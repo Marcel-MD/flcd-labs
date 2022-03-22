@@ -35,11 +35,12 @@ public static class Step1
         return grammar;
     }
 
+    // TODO: Learn Combinatorics
     private static List<string> GetNewTransitions(char c, string s, int occurrence)
     {
         if (occurrence > 2)
         {
-            throw new NotImplementedException($"No combinatorics here, please change this '{s}'");
+            throw new NotImplementedException($"Don't know combinatorics, please change this '{s}'");
         }
         
         var ts = new List<string>();
