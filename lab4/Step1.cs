@@ -23,10 +23,9 @@ public static class Step1
                 var length = v.Count;
                 for (var i = 0; i < length; i++)
                 {
-                    var occurrence = v[i].Count(c => c == symbol);
-                    if (occurrence > 0)
+                    if (v[i].Contains(symbol))
                     {
-                        grammar.P[k].AddRange(GetNewTransitions(symbol, v[i], occurrence));
+                        grammar.P[k].AddRange(Combinations(symbol, v[i]).Skip(1));
                     }
                 }
             }   
@@ -35,23 +34,24 @@ public static class Step1
         return grammar;
     }
 
-    // TODO: Learn Combinatorics
-    private static List<string> GetNewTransitions(char c, string s, int occurrence)
+    private static IEnumerable<string> Combinations(char symbol, string str)
     {
-        if (occurrence > 2)
-        {
-            throw new NotImplementedException($"Don't know combinatorics, please change this '{s}'");
-        }
+        int firstSymbol = str.IndexOf(symbol);
         
-        var ts = new List<string>();
-    
-        if (occurrence == 2)
-        {
-            ts.Add(s.Remove(s.IndexOf(c), 1));
-            ts.Add(s.Remove(s.LastIndexOf(c), 1));
-        }
+        if (firstSymbol == -1) // Base case: no further combinations
+            return new []{str};
+
+        string prefix = str.Substring(0, firstSymbol);
+        string suffix = str.Substring(firstSymbol + 1);
         
-        ts.Add(s.Replace(c.ToString(), ""));
-        return ts;
+        // Recursion: Generate all combinations of suffix
+        var recursiveCombinations = Combinations(symbol, suffix);
+
+        // Return sequence in which each string is a concatenation of the
+        // prefix, either symbol or empty, and one of the recursively-found suffixes
+        return
+            from s in new []{symbol.ToString(), ""}
+            from recSuffix in recursiveCombinations
+            select prefix + s + recSuffix;                                    
     }
 }
