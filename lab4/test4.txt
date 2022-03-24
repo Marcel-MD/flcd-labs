@@ -1,0 +1,3 @@
+﻿S A B C D
+a b
+S-aB S-bA S-A A-B A-Sa A-bBA A-b B-b B-bS B-aD B-ε D-AA C-Ba

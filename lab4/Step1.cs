@@ -4,31 +4,47 @@ public static class Step1
 {
     public static Grammar RemoveEmpty(Grammar grammar)
     {
-        // Get the list of symbols that derive to ε
-        var emptySymbols = new List<char>();
-        foreach (var (k, v) in grammar.P)
+        while (true)
         {
-            if (v.Contains("ε"))
-            {
-                emptySymbols.Add(k[0]);
-                grammar.P[k].Remove("ε");
-            }
-        }
-
-        // Add new transitions
-        foreach (var symbol in emptySymbols)
-        {
+            // Get the list of symbols that derive to ε
+            var emptySymbols = new List<char>();
             foreach (var (k, v) in grammar.P)
             {
-                var length = v.Count;
-                for (var i = 0; i < length; i++)
+                if (v.Contains("ε"))
                 {
-                    if (v[i].Contains(symbol))
-                    {
-                        grammar.P[k].AddRange(Combinations(symbol, v[i]).Skip(1));
-                    }
+                    emptySymbols.Add(k[0]);
+                    grammar.P[k].Remove("ε");
                 }
-            }   
+
+                if (v.Contains(""))
+                {
+                    emptySymbols.Add(k[0]);
+                    grammar.P[k].Remove("");
+                }
+            }
+
+            // Add new transitions
+            foreach (var symbol in emptySymbols)
+            {
+                foreach (var (k, v) in grammar.P)
+                {
+                    var length = v.Count;
+                    for (var i = 0; i < length; i++)
+                    {
+                        if (v[i].Contains(symbol))
+                        {
+                            grammar.P[k].AddRange(Combinations(symbol, v[i]).Skip(1));
+                        }
+                    }
+                }   
+            }
+
+            if (emptySymbols.Count == 0)
+            {
+                break;
+            }
+
+            emptySymbols.Clear();
         }
 
         return grammar;
