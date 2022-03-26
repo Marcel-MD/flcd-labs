@@ -6,7 +6,7 @@ public static class Step3
     {
         var productive = new HashSet<string>();
 
-        // A -> α, where α in Vt
+        // A -> αa, where α in Vt
         foreach (var (k, v) in grammar.P)
         {
             foreach (var transition in v)

@@ -4,18 +4,26 @@ public static class Step2
 {
     public static Grammar RemoveRename(Grammar grammar)
     {
-        foreach (var (k, v) in grammar.P)
+        var repeat = true;
+
+        while (repeat)
         {
-            var length = v.Count;
-            for (int i = 0; i < length; i++)
+            repeat = false;
+            foreach (var (k, v) in grammar.P)
             {
-                if (v[i].Length == 1 && grammar.IsNonTerminal(v[i]))
+                var length = v.Count;
+                for (int i = 0; i < length; i++)
                 {
-                    var symbol = v[i];
-                    foreach (var transition in grammar.P[symbol])
+                    if (v[i].Length == 1 && grammar.IsNonTerminal(v[i]))
                     {
-                        if (transition.Length > 1 || grammar.IsTerminal(transition))
+                        var symbol = v[i];
+                        foreach (var transition in grammar.P[symbol])
                         {
+                            if (transition.Length == 1 && grammar.IsNonTerminal(transition))
+                            {
+                                repeat = true;
+                            }
+                        
                             if (v[i] == symbol)
                             {
                                 v[i] = transition;
@@ -29,6 +37,7 @@ public static class Step2
                 }
             }
         }
+
 
         return grammar;
     }

@@ -15,8 +15,7 @@ public static class Step1
                     emptySymbols.Add(k[0]);
                     grammar.P[k].Remove("ε");
                 }
-
-                if (v.Contains(""))
+                else if (v.Contains(""))
                 {
                     emptySymbols.Add(k[0]);
                     grammar.P[k].Remove("");
