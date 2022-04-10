@@ -12,7 +12,8 @@ public class Grammar
     private int _nextNonTerminal = 83;
     public Dictionary<string, HashSet<string>> First = new Dictionary<string, HashSet<string>>();
     public Dictionary<string, HashSet<string>> Follow = new Dictionary<string, HashSet<string>>();
-    
+    public Dictionary<string, Dictionary<string, string>> ParsingTable;
+
     public bool IsTerminal(string symbol) => T.Contains(symbol);
     public bool IsTerminal(char symbol) => T.Contains(symbol.ToString());
     public bool IsNonTerminal(string symbol) => N.Contains(symbol);
@@ -56,6 +57,12 @@ public class Grammar
         }
         sb.Append("}\nP = " + length + "\n");
         
+        return sb.ToString();
+    }
+
+    public void PrintFirstFollow()
+    {
+        var sb = new StringBuilder();
         sb.Append("First = {\n");
         foreach (var (k, v) in First)
         {
@@ -75,7 +82,32 @@ public class Grammar
             }
         }
         sb.Append("}\n");
+        Console.WriteLine(sb.ToString());
+    }
+
+    public void PrintParsingTable()
+    {
+        var sb = new StringBuilder();
+        sb.Append("    |");
+        foreach (var (s, ss) in ParsingTable[S])
+        {
+            sb.Append($" {s} |");
+        }
+        sb.Append("\n");
+    
+        foreach (var (k, v) in ParsingTable)
+        {
+            sb.Append($"{k} = | ");
+            foreach (var (s, ss) in v)
+            {
+                if (ss == "")
+                    sb.Append("- | ");
+                else
+                    sb.Append($"{ss} | ");
+            }
+            sb.Append("\n");
+        }
         
-        return sb.ToString();
+        Console.WriteLine(sb.ToString());
     }
 }

@@ -36,4 +36,8 @@ Console.WriteLine(grammar);
 
 Console.WriteLine("//== First and Follow ==//");
 grammar.FirstFollow();
-Console.WriteLine(grammar);
+grammar.PrintFirstFollow();
+
+Console.WriteLine("//== Parsing Table ==//");
+grammar.ConstructParsingTable();
+grammar.PrintParsingTable();
