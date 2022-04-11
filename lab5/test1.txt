@@ -1,3 +1,4 @@
 ﻿S A B C D
 a b c d f g ε
 S-BfD B-Bc B-D D-Ag D-A A-d A-c
+dgcfdg

@@ -6,6 +6,7 @@ var lines = File.ReadLines(@"C:\Users\Marcel\Projects\go\lfpc-labs\lab5\test2.tx
 
 var n = lines[0].Split(" ").ToHashSet();
 var t = lines[1].Split(" ").ToHashSet();
+var w = lines[3];
 var p = new Dictionary<string, HashSet<string>>();
 
 foreach (var prod in lines[2].Split(" "))
@@ -21,7 +22,7 @@ foreach (var prod in lines[2].Split(" "))
         p[tmp[0]].Add(tmp[1]);
     }
 }
-var grammar = new Grammar(){N = n, T = t, P = p, S = "S"};
+var grammar = new Grammar(){N = n, T = t, P = p, S = "S", Word = w};
 
 Console.WriteLine("//== Default Grammar ==//");
 Console.WriteLine(grammar);
@@ -41,3 +42,6 @@ grammar.PrintFirstFollow();
 Console.WriteLine("//== Parsing Table ==//");
 grammar.ConstructParsingTable();
 grammar.PrintParsingTable();
+
+Console.WriteLine($"//== Parsing {w} ==//");
+grammar.ParseWord();

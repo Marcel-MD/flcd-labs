@@ -13,6 +13,7 @@ public class Grammar
     public Dictionary<string, HashSet<string>> First = new Dictionary<string, HashSet<string>>();
     public Dictionary<string, HashSet<string>> Follow = new Dictionary<string, HashSet<string>>();
     public Dictionary<string, Dictionary<string, string>> ParsingTable;
+    public string Word;
 
     public bool IsTerminal(string symbol) => T.Contains(symbol);
     public bool IsTerminal(char symbol) => T.Contains(symbol.ToString());
