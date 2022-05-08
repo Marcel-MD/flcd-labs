@@ -2,7 +2,7 @@
 
 using lab5;
 
-var lines = File.ReadLines(@"C:\Users\Marcel\Projects\go\lfpc-labs\lab5\test2.txt").ToArray();
+var lines = File.ReadLines(@"C:\Users\Marcel\Projects\go\lfpc-labs\lab5\test1.txt").ToArray();
 
 var n = lines[0].Split(" ").ToHashSet();
 var t = lines[1].Split(" ").ToHashSet();

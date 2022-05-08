@@ -1,7 +1,7 @@
 ﻿using lab4;
 
 // Reading Context Free Grammar
-var lines = File.ReadLines(@"C:\Users\Marcel\Projects\go\lfpc-labs\lab4\test2.txt").ToArray();
+var lines = File.ReadLines(@"C:\Users\Marcel\Projects\go\lfpc-labs\lab4\test3.txt").ToArray();
 
 var n = lines[0].Split(" ").ToHashSet();
 var t = lines[1].Split(" ").ToHashSet();

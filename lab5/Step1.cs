@@ -20,10 +20,10 @@ public static class Step1
 
         foreach (var s in haveLeftRecursion)
         {
-            removeLeftRecursionFor(k: s);
+            RemoveLeftRecursionFor(s);
         }
         
-        void removeLeftRecursionFor(string k)
+        void RemoveLeftRecursionFor(string k)
         {
             var nt = grammar.GetNextNonTerminal();
 

@@ -54,16 +54,16 @@ public static class Step3
             if (i >= s.Length)
                 return g.Follow[k];
 
-            var nt = s[i].ToString();
+            var currentSymbol = s[i].ToString();
 
-            if (g.IsTerminal(nt))
-                return new HashSet<string>{nt};
+            if (g.IsTerminal(currentSymbol))
+                return new HashSet<string>{currentSymbol};
 
-            if (g.IsNonTerminal(nt))
+            if (g.IsNonTerminal(currentSymbol))
             {
                 var set = new HashSet<string>();
-                set.UnionWith(g.First[nt]);
-                if (g.First[nt].Contains("ε"))
+                set.UnionWith(g.First[currentSymbol]);
+                if (g.First[currentSymbol].Contains("ε"))
                     set.UnionWith(GetFollow(k, i + 1, s));
                 set.Remove("ε");
                 return set;
