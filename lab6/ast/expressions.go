@@ -81,7 +81,9 @@ func (e *IfExpression) String() string {
 	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
 	out.WriteString(printTab() + "condition: " + e.Condition.String())
 	out.WriteString(printTab() + "consequence: " + e.Consequence.String())
-	out.WriteString(printTab() + "alternative: " + e.Alternative.String())
+	if e.Alternative != nil {
+		out.WriteString(printTab() + "alternative: " + e.Alternative.String())
+	}
 	tab--
 	out.WriteString(printTab() + "}\n")
 	return out.String()
@@ -100,6 +102,29 @@ func (e *WhileExpression) String() string {
 	tab++
 	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
 	out.WriteString(printTab() + "condition: " + e.Condition.String())
+	out.WriteString(printTab() + "body: " + e.Body.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
+}
+
+type ForExpression struct {
+	Token       token.Token
+	Declaration *VariableDeclarationStatement
+	Condition   Expression
+	Increment   Expression
+	Body        *Block
+}
+
+func (e *ForExpression) expression() {}
+func (e *ForExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "declaration: " + e.Declaration.String())
+	out.WriteString(printTab() + "condition: " + e.Condition.String())
+	out.WriteString(printTab() + "increment: " + e.Increment.String())
 	out.WriteString(printTab() + "body: " + e.Body.String())
 	tab--
 	out.WriteString(printTab() + "}\n")

@@ -72,8 +72,8 @@ func (s *FunctionDeclarationStatement) String() string {
 	}
 	tab--
 	out.WriteString(printTab() + "]\n")
-	tab--
 	out.WriteString(printTab() + "body: " + s.Body.String())
+	tab--
 	out.WriteString(printTab() + "}\n")
 	return out.String()
 }

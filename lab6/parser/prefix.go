@@ -86,3 +86,33 @@ func (p *Parser) parseWhileExpression() ast.Expression {
 
 	return expression
 }
+
+func (p *Parser) parseForExpression() ast.Expression {
+	expression := &ast.ForExpression{Token: p.currentToken}
+
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+
+	p.nextToken()
+	expression.Declaration = p.parseVariableDeclaration()
+
+	p.nextToken()
+	expression.Condition = p.parseExpression(LOWEST)
+
+	p.nextToken()
+	p.nextToken()
+	expression.Increment = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+
+	expression.Body = p.parseBlock()
+
+	return expression
+}

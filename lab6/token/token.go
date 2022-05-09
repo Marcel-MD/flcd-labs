@@ -64,6 +64,7 @@ var keywords = map[string]TokenType{
 	"if":     IF,
 	"else":   ELSE,
 	"return": RETURN,
+	"for":    FOR,
 	"while":  WHILE,
 	"int":    INT,
 	"float":  FLOAT,

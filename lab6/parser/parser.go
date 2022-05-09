@@ -42,6 +42,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.prefixParseFns[token.LPAREN] = p.parseGroupedExpression
 	p.prefixParseFns[token.IF] = p.parseIfExpression
 	p.prefixParseFns[token.WHILE] = p.parseWhileExpression
+	p.prefixParseFns[token.FOR] = p.parseForExpression
 
 	p.infixParseFns = make(map[token.TokenType]infixParseFn)
 	p.infixParseFns[token.ASSIGN] = p.parseAssignExpression
