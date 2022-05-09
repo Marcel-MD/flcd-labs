@@ -2,9 +2,7 @@ package ast
 
 import (
 	"bytes"
-	"fmt"
 	"lab/token"
-	"strings"
 )
 
 type PrefixExpression struct {
@@ -16,10 +14,13 @@ type PrefixExpression struct {
 func (e *PrefixExpression) expression() {}
 func (e *PrefixExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("(")
-	out.WriteString(e.Operator)
-	out.WriteString(e.Right.String())
-	out.WriteString(")")
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: PREFIX " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "operator: " + e.Operator + "\n")
+	out.WriteString(printTab() + "right: " + e.Right.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
@@ -33,11 +34,14 @@ type InfixExpression struct {
 func (e *InfixExpression) expression() {}
 func (e *InfixExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("(")
-	out.WriteString(e.Left.String())
-	out.WriteString(" " + e.Operator + " ")
-	out.WriteString(e.Right.String())
-	out.WriteString(")")
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: INFIX " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "left: " + e.Left.String())
+	out.WriteString(printTab() + "operator: " + e.Operator + "\n")
+	out.WriteString(printTab() + "right: " + e.Right.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
@@ -48,14 +52,17 @@ type AssignExpression struct {
 	Value      Expression
 }
 
-func (as *AssignExpression) expression() {}
-func (as *AssignExpression) String() string {
+func (e *AssignExpression) expression() {}
+func (e *AssignExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("(")
-	out.WriteString(as.Identifier.String())
-	out.WriteString(as.Operator)
-	out.WriteString(as.Value.String())
-	out.WriteString(")")
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "identifier: " + e.Identifier.String())
+	out.WriteString(printTab() + "operator: " + e.Operator + "\n")
+	out.WriteString(printTab() + "value: " + e.Value.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
@@ -66,34 +73,36 @@ type IfExpression struct {
 	Alternative *Block
 }
 
-func (ie *IfExpression) expression() {}
-func (ie *IfExpression) String() string {
+func (e *IfExpression) expression() {}
+func (e *IfExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("IF ")
-	out.WriteString(ie.Condition.String())
-	out.WriteString(" ")
-	out.WriteString(ie.Consequence.String())
-	if ie.Alternative != nil {
-
-		out.WriteString("ELSE ")
-		out.WriteString(ie.Alternative.String())
-	}
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "condition: " + e.Condition.String())
+	out.WriteString(printTab() + "consequence: " + e.Consequence.String())
+	out.WriteString(printTab() + "alternative: " + e.Alternative.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
 type WhileExpression struct {
 	Token     token.Token
 	Condition Expression
-	Block     *Block
+	Body      *Block
 }
 
-func (we *WhileExpression) expression() {}
-func (we *WhileExpression) String() string {
+func (e *WhileExpression) expression() {}
+func (e *WhileExpression) String() string {
 	var out bytes.Buffer
-	out.WriteString("WHILE ")
-	out.WriteString(we.Condition.String())
-	out.WriteString(" ")
-	out.WriteString(we.Block.String())
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(e.Token.Type) + "\n")
+	out.WriteString(printTab() + "condition: " + e.Condition.String())
+	out.WriteString(printTab() + "body: " + e.Body.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
@@ -103,17 +112,22 @@ type FunctionCall struct {
 	Arguments []Expression
 }
 
-func (fc *FunctionCall) expression() {}
-func (fc *FunctionCall) String() string {
+func (e *FunctionCall) expression() {}
+func (e *FunctionCall) String() string {
 	var out bytes.Buffer
-	args := []string{}
-	for _, a := range fc.Arguments {
-		args = append(args, a.String())
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: CALL\n")
+	out.WriteString(printTab() + "function: " + e.Function.String())
+	out.WriteString(printTab() + "arguments: [\n")
+	tab++
+	for _, a := range e.Arguments {
+		out.WriteString(printTab() + a.String())
 	}
-	out.WriteString(fc.Function.String())
-	out.WriteString("(")
-	out.WriteString(strings.Join(args, ", "))
-	out.WriteString(")")
+	tab--
+	out.WriteString(printTab() + "]\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
 
@@ -124,5 +138,12 @@ type Parameter struct {
 
 func (p *Parameter) expression() {}
 func (p *Parameter) String() string {
-	return fmt.Sprintf("[%s %s]", p.Token.Type, p.Identifier.String())
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: PARAM " + string(p.Token.Type) + "\n")
+	out.WriteString(printTab() + "identifier: " + p.Identifier.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }

@@ -82,7 +82,7 @@ func (p *Parser) parseWhileExpression() ast.Expression {
 		return nil
 	}
 
-	expression.Block = p.parseBlock()
+	expression.Body = p.parseBlock()
 
 	return expression
 }

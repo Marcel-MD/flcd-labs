@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"fmt"
+	"bytes"
 	"lab/token"
 )
 
@@ -23,13 +23,31 @@ type Program struct {
 	Statements []Statement
 }
 
-func (p *Program) String() string {
-	str := "Program {\n"
-	for _, s := range p.Statements {
-		str = str + s.String()
+var tab int = 0
+
+func printTab() string {
+	var out bytes.Buffer
+	for i := 0; i < tab; i++ {
+		out.WriteString("  ")
 	}
-	str = str + "}\n"
-	return str
+	return out.String()
+}
+
+func (p *Program) String() string {
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: PROGRAM\n")
+	out.WriteString(printTab() + "statements: [\n")
+	tab++
+	for _, s := range p.Statements {
+		out.WriteString(printTab() + s.String())
+	}
+	tab--
+	out.WriteString(printTab() + "]\n")
+	tab--
+	out.WriteString("}\n")
+	return out.String()
 }
 
 type Block struct {
@@ -38,12 +56,20 @@ type Block struct {
 }
 
 func (b *Block) String() string {
-	str := "{\n"
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: BLOCK\n")
+	out.WriteString(printTab() + "statements: [\n")
+	tab++
 	for _, s := range b.Statements {
-		str = str + s.String()
+		out.WriteString(printTab() + s.String())
 	}
-	str = str + "}\n"
-	return str
+	tab--
+	out.WriteString(printTab() + "]\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type Identifier struct {
@@ -53,8 +79,14 @@ type Identifier struct {
 
 func (i *Identifier) expression() {}
 func (i *Identifier) String() string {
-	str := fmt.Sprintf("[%s]", i.Value)
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(i.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + i.Token.Value + "\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type IntegerLiteral struct {
@@ -64,8 +96,14 @@ type IntegerLiteral struct {
 
 func (l *IntegerLiteral) expression() {}
 func (l *IntegerLiteral) String() string {
-	str := fmt.Sprintf("[%s: %d]", l.Token.Type, l.Value)
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(l.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + l.Token.Value + "\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type FloatLiteral struct {
@@ -75,8 +113,14 @@ type FloatLiteral struct {
 
 func (l *FloatLiteral) expression() {}
 func (l *FloatLiteral) String() string {
-	str := fmt.Sprintf("[%s: %f]", l.Token.Type, l.Value)
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(l.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + l.Token.Value + "\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type StringLiteral struct {
@@ -86,8 +130,14 @@ type StringLiteral struct {
 
 func (l *StringLiteral) expression() {}
 func (l *StringLiteral) String() string {
-	str := fmt.Sprintf("[%s: '%s']", l.Token.Type, l.Value)
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(l.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + l.Token.Value + "\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type BooleanLiteral struct {
@@ -97,6 +147,12 @@ type BooleanLiteral struct {
 
 func (l *BooleanLiteral) expression() {}
 func (l *BooleanLiteral) String() string {
-	str := fmt.Sprintf("[%s: %t]", l.Token.Type, l.Value)
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(l.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + l.Token.Value + "\n")
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }

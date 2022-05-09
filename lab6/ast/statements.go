@@ -1,7 +1,7 @@
 package ast
 
 import (
-	"fmt"
+	"bytes"
 	"lab/token"
 )
 
@@ -12,7 +12,7 @@ type ExpressionStatement struct {
 
 func (s *ExpressionStatement) statement() {}
 func (s *ExpressionStatement) String() string {
-	return s.Value.String() + "\n"
+	return s.Value.String()
 }
 
 type ReturnStatement struct {
@@ -22,8 +22,14 @@ type ReturnStatement struct {
 
 func (s *ReturnStatement) statement() {}
 func (s *ReturnStatement) String() string {
-	str := fmt.Sprintf("{%s: %s}\n", s.Token.Type, s.Value.String())
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: " + string(s.Token.Type) + "\n")
+	out.WriteString(printTab() + "value: " + s.Value.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type VariableDeclarationStatement struct {
@@ -34,8 +40,15 @@ type VariableDeclarationStatement struct {
 
 func (s *VariableDeclarationStatement) statement() {}
 func (s *VariableDeclarationStatement) String() string {
-	str := fmt.Sprintf("{%s %s = %s}\n", s.Token.Type, s.Identifier.String(), s.Value.String())
-	return str
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: DECLARATION " + string(s.Token.Type) + "\n")
+	out.WriteString(printTab() + "identifier: " + s.Identifier.String())
+	out.WriteString(printTab() + "value: " + s.Value.String())
+	tab--
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
 
 type FunctionDeclarationStatement struct {
@@ -47,10 +60,20 @@ type FunctionDeclarationStatement struct {
 
 func (s *FunctionDeclarationStatement) statement() {}
 func (s *FunctionDeclarationStatement) String() string {
-	str := fmt.Sprintf("Function {%s %s (", s.Token.Type, s.Identifier.String())
+	var out bytes.Buffer
+	out.WriteString("{\n")
+	tab++
+	out.WriteString(printTab() + "type: FUNCTION " + string(s.Token.Type) + "\n")
+	out.WriteString(printTab() + "identifier: " + s.Identifier.String())
+	out.WriteString(printTab() + "parameters: [\n")
+	tab++
 	for _, p := range s.Parameters {
-		str = str + p.String()
+		out.WriteString(printTab() + p.String())
 	}
-	str = str + fmt.Sprintf(") %s}\n", s.Body.String())
-	return str
+	tab--
+	out.WriteString(printTab() + "]\n")
+	tab--
+	out.WriteString(printTab() + "body: " + s.Body.String())
+	out.WriteString(printTab() + "}\n")
+	return out.String()
 }
