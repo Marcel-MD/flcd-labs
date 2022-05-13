@@ -31,6 +31,9 @@ const (
 	AND      = "AND"
 	OR       = "OR"
 
+	INCREMENT = "INCREMENT"
+	DECREMENT = "DECREMENT"
+
 	COMMA     = "COMMA"
 	SEMICOLON = "SEMICOLON"
 	LPAREN    = "LPAREN"

@@ -77,9 +77,19 @@ func (l *Lexer) NextToken() token.Token {
 			t = token.New(token.ILLEGAL, "|")
 		}
 	case '-':
-		t = token.New(token.MINUS, "-")
+		if l.peekChar() == '-' {
+			t = token.New(token.DECREMENT, "--")
+			l.movePosition()
+		} else {
+			t = token.New(token.MINUS, "-")
+		}
 	case '+':
-		t = token.New(token.PLUS, "+")
+		if l.peekChar() == '+' {
+			t = token.New(token.INCREMENT, "++")
+			l.movePosition()
+		} else {
+			t = token.New(token.PLUS, "+")
+		}
 	case '>':
 		if l.peekChar() == '=' {
 			t = token.New(token.GREAT_EQ, ">=")

@@ -39,6 +39,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.prefixParseFns[token.FALSE] = p.parseBooleanLiteral
 	p.prefixParseFns[token.NOT] = p.parsePrefixExpression
 	p.prefixParseFns[token.MINUS] = p.parsePrefixExpression
+	p.prefixParseFns[token.INCREMENT] = p.parsePrefixExpression
+	p.prefixParseFns[token.DECREMENT] = p.parsePrefixExpression
 	p.prefixParseFns[token.LPAREN] = p.parseGroupedExpression
 	p.prefixParseFns[token.IF] = p.parseIfExpression
 	p.prefixParseFns[token.WHILE] = p.parseWhileExpression
