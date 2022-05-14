@@ -155,20 +155,3 @@ func (e *FunctionCall) String() string {
 	out.WriteString(printTab() + "}\n")
 	return out.String()
 }
-
-type Parameter struct {
-	Token      token.Token
-	Identifier *Identifier
-}
-
-func (p *Parameter) expression() {}
-func (p *Parameter) String() string {
-	var out bytes.Buffer
-	out.WriteString("{\n")
-	tab++
-	out.WriteString(printTab() + "type: PARAM " + string(p.Token.Type) + "\n")
-	out.WriteString(printTab() + "identifier: " + p.Identifier.String())
-	tab--
-	out.WriteString(printTab() + "}\n")
-	return out.String()
-}
